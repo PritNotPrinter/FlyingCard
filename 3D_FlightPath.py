@@ -7,7 +7,6 @@ Specifications:
 - Include effects of aerodynamic drag and gyroscopic stability.
 - Don't incude holes in the cards (as the decks I throw), or sound emitted from flight.
 - Incorporate differential equations for x(t), y(t), z(t), and Euler angles for pitch, yaw, and roll.
-- Assume that the card is rigid (negligible bending), so ignore the Magnus Force
 - Visualize somehow
 
 Future Plans: Add more functionality based around:
