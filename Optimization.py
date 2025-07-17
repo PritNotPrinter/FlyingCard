@@ -303,15 +303,16 @@ if __name__ == "__main__":
     throwAngle = 0.0
     spinRate = 50 
     user_params = [initialVelocity, throwAngle, spinRate]
-    custom_throw(40.0, 0.0, 50, 0.00175, 0.00027) # the asterisk refers to a formula rather than a set of parameters``
+    custom_throw(40.0, 0.0, 50, 0.00175, 0.00027) # Example -- should be ~65m distance
     custom_throw(0.0, 0.0, 50, 0.00175, 0.00027) # Velocity 1
     custom_throw(7.50, 0.0, 50, 0.00175, 0.00027) # Velocity 2
+    custom_throw(15.0, 0.0, 50, 0.00175, 0.00027) # Velocity 3
     custom_throw(15.0, 0.0, 50, 0.00175, 0.00027) # Angle 1
     custom_throw(15.0, 15.0, 50, 0.00175, 0.00027) # Angle 2
     custom_throw(15.0, 30.0, 50, 0.00175, 0.00027) # Angle 3
     custom_throw(15.0, 0.0, 0, 0.00175, 0.00027) # Spin 1
     custom_throw(15.0, 0.0, 25, 0.00175, 0.00027) # Spin 2
-    custom_throw(15.0, 0.0, 50, 0.00175, 0.00027) # Max
+    custom_throw(15.0, 0.0, 50, 0.00175, 0.00027) # True-Optimal values
 
 
     # Determine whichever variable reduces distance the most
@@ -321,3 +322,4 @@ if __name__ == "__main__":
     floatInput = float(distanceInput)
     solve_for_distance(floatInput, results)
     export_csv()
+    print("\n\n\n\n")
