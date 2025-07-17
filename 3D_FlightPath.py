@@ -13,6 +13,9 @@ Future Plans: Add more functionality based around:
 - Holes in the cards, how that affects motion, airflow, sound emitted
 - Including more throwing factors? e.g. best angle to throw at for distance, sound, wtv
 - Some form of fluid dispersion/wake pattern around the card (Lattice Boltzmann?
+
+Current Issues:
+- Axes don't align properly -- first point doesn't start at x=0 && z=0
 '''
 
 
@@ -132,15 +135,24 @@ sol = solve_ivp(
 
 
 # =================== Visualization ===================
+x_std = sol.y[1]  # forward (depth)
+y_std = sol.y[2]  # vertical (gravity)
+z_std = sol.y[0]  # side-to-side (horizontal)
+# Trying to fix the axes, for the first point to be at x = 0, z = 0
+x_shifted = x_std - x_std[0]  # Shift forward motion to start at 0
+z_shifted = z_std - z_std[0]  # Shift horizontal motion to start at 0
+y_shifted = y_std             # Leave vertical motion untouched
 fig = plt.figure(figsize=(10, 7))
 ax = fig.add_subplot(111, projection='3d')  # 3D plot setup
-ax.plot(sol.y[0], sol.y[1], sol.y[2], color="rebeccapurple", label='Simulated Trajectory')
+ax.invert_xaxis()
+ax.invert_yaxis()
+ax.plot(x_shifted, y_shifted, z_shifted, color="rebeccapurple", label='Simulated Trajectory')
 
 # Variable line (testing different variable and constant values)
 # Define a second set of throw conditions to compare
 v0_2 = 7.0  # throw speed
 Theta_0_2 = np.radians(10)  #  launch angle
-Omega_0_2 = 8 * np.pi  #  spin
+Omega_0_2 = 16 * np.pi  #  spin
 m_2 = 0.00175   # weight
 A_2 = 0.005544   #  card area
 r_2 = 0.0755   # radius
@@ -158,26 +170,32 @@ Y0_2 = [
     0.0, Omega_0_2
 ]
 
-# Temporarily replace global constants with new values
-m_orig, A_orig, r_orig, th_orig, Cd_orig, P_orig, tau_0_orig = m, A, r, th, Cd, P, tau_0
-m, A, r, th, Cd, P, tau_0 = m_2, A_2, r_2, th_2, Cd_2, P_2, tau_0_2
-
 # Solve a second trajectory using new initial conditions
 sol_2 = solve_ivp(
     motion_model, [0, T_END], Y0_2,
     t_eval=t_vals, rtol=1e-8, atol=1e-10
 )
 
+# Temporarily replace global constants with new values
+m_orig, A_orig, r_orig, th_orig, Cd_orig, P_orig, tau_0_orig = m, A, r, th, Cd, P, tau_0
+m, A, r, th, Cd, P, tau_0 = m_2, A_2, r_2, th_2, Cd_2, P_2, tau_0_2
+
 # Restore original constants
 m, A, r, th, Cd, P, tau_0 = m_orig, A_orig, r_orig, th_orig, Cd_orig, P_orig, tau_0_orig
 
-# Plot the second path with dashed line
-ax.plot(sol_2.y[0], sol_2.y[1], sol_2.y[2], color='forestgreen', linestyle='--', label='Variable Path')
+# Fixing a typo in my axes from earlier
+x_std_2 = sol_2.y[1]
+y_std_2 = sol_2.y[2]
+z_std_2 = sol_2.y[0]
+x_shifted_2 = x_std_2 - x_std_2[0]
+z_shifted_2 = z_std_2 - z_std_2[0]
+y_shifted_2 = y_std_2
 
-ax.set_xlabel('X (m)')
-ax.set_ylabel('Y (m)')
-ax.set_zlabel('Z (m)')
-ax.set_title('3D Flight Path of a Playing Card')
+# Plot the second path with dashed line
+ax.plot(x_shifted_2, y_shifted_2, z_shifted_2, color='forestgreen', linestyle='--', label='Variable Path')
+ax.set_xlabel('X (Horizontal)')
+ax.set_ylabel('Z (Depth/Forward)')
+ax.set_zlabel('Y (Vertical)') #('Z (Horizontal)')
 ax.legend()
 plt.tight_layout()
 plt.show()
